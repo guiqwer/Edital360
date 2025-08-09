@@ -1,0 +1,37 @@
+services:
+  edital360:
+    container_name: edital360_backend
+    build:
+      context: ./edital360
+    ports:
+      - 8090:8080
+    volumes:
+      - ${HOME}/edital360-arquivos/documentos:/home/app/jedi-arquivos/documentos
+    env_file:
+      - .env
+    logging:
+      options:
+        max-size: 10m
+    networks:
+      - edital360-network
+
+
+  edital360-psql:
+    container_name: edital360-psql
+    image: postgres:alpine3.19
+    volumes:
+      - /volumes/edital360/database/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: 10m
+    networks:
+      - edital360-network
+
+networks:
+  edital360-network:
+    driver: bridge
