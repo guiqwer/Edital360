@@ -1,4 +1,4 @@
-package com.ifce.edital360.config;
+package com.ifce.edital360.config.swagger;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;

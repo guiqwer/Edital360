@@ -1,7 +1,7 @@
 package com.ifce.edital360.controller.cadastro;
 
 import com.ifce.edital360.dto.cadastro.CadastroCompletoRequest;
-import com.ifce.edital360.service.UserService;
+import com.ifce.edital360.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

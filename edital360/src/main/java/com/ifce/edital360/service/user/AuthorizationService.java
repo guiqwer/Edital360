@@ -1,4 +1,4 @@
-package com.ifce.edital360.service;
+package com.ifce.edital360.service.user;
 
 import com.ifce.edital360.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

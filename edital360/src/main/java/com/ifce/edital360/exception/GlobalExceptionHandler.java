@@ -6,6 +6,8 @@ import com.ifce.edital360.exception.custom.cadastro.CadastroException;
 import com.ifce.edital360.exception.custom.cadastro.CpfJaCadastradoException;
 import com.ifce.edital360.exception.custom.cadastro.EmailNaoConfereException;
 import com.ifce.edital360.exception.custom.cadastro.SenhaInvalidaException;
+import com.ifce.edital360.exception.custom.recuperarsenha.RecuperarSenhaException;
+import com.ifce.edital360.exception.custom.usuario.UsuarioException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,5 +85,30 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(UsuarioException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioExceptions(UsuarioException ex, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(RecuperarSenhaException.class)
+    public ResponseEntity<ErrorResponse> handleRecuperarSenhaExceptions(RecuperarSenhaException ex, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
 
 }

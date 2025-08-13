@@ -1,5 +1,7 @@
 package com.ifce.edital360.model.user;
 
+import com.ifce.edital360.model.enums.Role;
+import com.ifce.edital360.model.enums.Sex;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +32,7 @@ public class User implements UserDetails {
     private LocalDate dataNascimento;
 
     @Enumerated(EnumType.STRING)
-    private Sexo sexo;
+    private Sex sex;
 
     private String nomePai;
 
@@ -113,12 +115,12 @@ public class User implements UserDetails {
         this.dataNascimento = dataNascimento;
     }
 
-    public Sexo getSexo() {
-        return sexo;
+    public Sex getSexo() {
+        return sex;
     }
 
-    public void setSexo(Sexo sexo) {
-        this.sexo = sexo;
+    public void setSexo(Sex sex) {
+        this.sex = sex;
     }
 
     public String getNomePai() {

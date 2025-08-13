@@ -1,12 +1,14 @@
 package com.ifce.edital360.dto.cadastro;
 
-import com.ifce.edital360.model.user.Sexo;
+import com.ifce.edital360.dto.cadastro.validation.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 
+@PasswordMatches
 public record CadastroCompletoRequest(
         @NotBlank String cpf,
         @NotBlank String nomeCompleto,
@@ -24,13 +26,15 @@ public record CadastroCompletoRequest(
         @NotBlank String logradouro,
         String complemento,
         @NotBlank String numeroCasa,
-        @NotBlank String telefoneDdd,
-        @NotBlank String telefoneNumero,
+        String telefoneDdd,
+        String telefoneNumero,
         @NotBlank String celularDdd,
         @NotBlank String celularNumero,
         @Email String email,
         @Email String confirmarEmail,
-        @NotBlank String senha,
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+                message = "Senha deve ter 8+ caracteres, letras maiúsculas e minúsculas e números")
+        String senha,
         @NotBlank String confirmarSenha
 ) {
 }

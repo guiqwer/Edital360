@@ -1,4 +1,4 @@
-package com.ifce.edital360.infra.security;
+package com.ifce.edital360.config.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

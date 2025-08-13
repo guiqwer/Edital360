@@ -1,4 +1,4 @@
-package com.ifce.edital360.infra.security;
+package com.ifce.edital360.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +45,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cadastro/verificar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/cadastro/completar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/recuperacao/password/request").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/recuperacao/password/reset").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

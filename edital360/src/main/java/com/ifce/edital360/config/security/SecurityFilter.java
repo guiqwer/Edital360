@@ -1,6 +1,6 @@
-package com.ifce.edital360.infra.security;
+package com.ifce.edital360.config.security;
 
-import com.ifce.edital360.service.AuthorizationService;
+import com.ifce.edital360.service.user.AuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
