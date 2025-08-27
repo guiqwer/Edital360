@@ -5,16 +5,15 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @Entity
-@Table(name = "external_links")
-public class ExternalLinks {
+@Table(name="announcements")
+public class Announcements {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String url;
     private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "notice_id", nullable = false)
     private Notice notice;
@@ -51,19 +50,17 @@ public class ExternalLinks {
         this.notice = notice;
     }
 
-    public ExternalLinks(String url, LocalDateTime createdAt, Notice notice) {
+    public Announcements() {
+    }
+
+    public Announcements(String url, LocalDateTime createdAt, Notice notice) {
         this.url = url;
         this.createdAt = createdAt;
         this.notice = notice;
-    }
-
-    public ExternalLinks() {
     }
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
-
 }
