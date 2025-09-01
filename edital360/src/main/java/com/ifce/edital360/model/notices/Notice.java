@@ -4,6 +4,7 @@ package com.ifce.edital360.model.notices;
 import com.ifce.edital360.model.enums.Exam;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class Notice {
 
     private String title;
     private String description;
-    private Float remuneration;
+    private BigDecimal remuneration;
     private LocalDateTime initialDate;
     private LocalDateTime endDate;
     private LocalDateTime createdAt;
@@ -50,7 +51,7 @@ public class Notice {
 
     @ElementCollection
     private List<String> quotas;
-    private Float subscription;
+    private BigDecimal subscription;
     private String pdfUrl;
 
     @ElementCollection
@@ -87,11 +88,11 @@ public class Notice {
         this.description = description;
     }
 
-    public Float getRemuneration() {
+    public BigDecimal getRemuneration() {
         return remuneration;
     }
 
-    public void setRemuneration(Float remuneration) {
+    public void setRemuneration(BigDecimal remuneration) {
         this.remuneration = remuneration;
     }
 
@@ -183,11 +184,11 @@ public class Notice {
         this.quotas = quotas;
     }
 
-    public Float getSubscription() {
+    public BigDecimal getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(Float subscription) {
+    public void setSubscription(BigDecimal subscription) {
         this.subscription = subscription;
     }
 
@@ -207,7 +208,7 @@ public class Notice {
         this.schedule = schedule;
     }
 
-    public Notice(String title, String description, Float remuneration, LocalDateTime initialDate, LocalDateTime endDate, LocalDateTime createdAt, LocalDateTime examDate, List<Phase> phases, List<NoticeRole> roles, List<String> requirements, List<String> documents, List<ExternalLinks> externalLinks, List<Announcements> announcements, List<String> quotas, Float subscription, String pdfUrl, List<ScheduleItem> schedule) {
+    public Notice(String title, String description, BigDecimal remuneration, LocalDateTime initialDate, LocalDateTime endDate, LocalDateTime createdAt, LocalDateTime examDate, List<Phase> phases, List<NoticeRole> roles, List<String> requirements, List<String> documents, List<ExternalLinks> externalLinks, List<Announcements> announcements, List<String> quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule) {
         this.title = title;
         this.description = description;
         this.remuneration = remuneration;
