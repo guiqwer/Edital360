@@ -1,9 +1,11 @@
 package com.ifce.edital360.dto.notices;
 
 import com.ifce.edital360.model.enums.Exam;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record PhaseDto(
-    Integer order,
-    Exam exam
+    @Positive Integer order,
+    @NotNull Exam exam
 ) {
 }
