@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NoticeMapper {
-    public static Notice toEntity(NoticeCreateDto dto, String pdfUrl){
+    public static Notice toEntity(NoticeCreateDto dto, String pdfUrl, List<String> announcementsUrls){
         Notice notice = new Notice();
 
         notice.setTitle(dto.title());
@@ -47,6 +47,13 @@ public class NoticeMapper {
         }
 
         //preciso fazer a lógica dos announcements depois quando tiver upload de arquivo
+        if (announcementsUrls != null && !announcementsUrls.isEmpty()) {
+            notice.setAnnouncements(
+                    announcementsUrls.stream()
+                            .map(url -> new Announcements(url, null, notice))
+                            .toList()
+            );
+        }
 
         return notice;
     }
