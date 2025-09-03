@@ -2,6 +2,8 @@ package com.ifce.edital360.service.notice;
 
 import com.ifce.edital360.dto.notices.NoticeCreateDto;
 import com.ifce.edital360.dto.notices.NoticeResponseDto;
+import com.ifce.edital360.mapper.NoticeMapper;
+import com.ifce.edital360.model.notices.Notice;
 import com.ifce.edital360.repository.ExternalLinksRepository;
 import com.ifce.edital360.repository.NoticeRepository;
 import com.ifce.edital360.service.localStorage.LocalStorageService;
@@ -26,28 +28,34 @@ public class NoticeService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-//    public NoticeResponseDto createNotice(NoticeCreateDto dto) throws IOException {
-//        String pdfUrl = null;
-//
-//        if(dto.pdf() != null && !dto.pdf().isEmpty()) {
-//            var uploadResult = localStorageService.salvar(dto.pdf());
-//            var linkCru = baseUrl + "/publicos/" + uploadResult;
-//            pdfUrl = linkCru.replaceAll("\\s+", "_");
-//
-//        }
-//
-//        List<String> announcementsUrls = null;
-//        if(dto.announcements() != null) {
-//            announcementsUrls = dto.announcements().stream()
-//                    .filter(a -> a.file() != null && !a.file().isEmpty())
-//                    .map(a -> {
-//                        try {
-//                            return localStorageService.salvar(a.file());
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    })
-//                    .toList();
-//        }
-//    }
+    public NoticeResponseDto createNotice(NoticeCreateDto dto) throws IOException {
+        String pdfUrl = null;
+
+        if(dto.pdf() != null && !dto.pdf().isEmpty()) {
+            var uploadResult = localStorageService.salvar(dto.pdf());
+            var linkCru = baseUrl + "/publicos/" + uploadResult;
+            pdfUrl = linkCru.replaceAll("\\s+", "_");
+
+        }
+
+        List<String> announcementsUrls = null;
+        if(dto.announcements() != null) {
+            announcementsUrls = dto.announcements().stream()
+                    .filter(a -> a.file() != null && !a.file().isEmpty())
+                    .map(a -> {
+                        try {
+                            return localStorageService.salvar(a.file());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .toList();
+        }
+
+        Notice notice = NoticeMapper.toEntity(dto, pdfUrl, announcementsUrls);
+
+        notice = noticeRepository.save(notice);
+
+        return NoticeMapper.toDto(notice);
+    }
 }
