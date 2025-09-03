@@ -47,6 +47,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/cadastro/completar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/recuperacao/password/request").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/recuperacao/password/reset").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/editais/cadastrar").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

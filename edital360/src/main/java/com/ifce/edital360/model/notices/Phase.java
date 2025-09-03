@@ -1,12 +1,14 @@
 package com.ifce.edital360.model.notices;
 
 import com.ifce.edital360.model.enums.Exam;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
 @Embeddable
 public class Phase {
+    @Column(name = "phase_order")
     private Integer order;
     @Enumerated(EnumType.STRING)
     private Exam exam;
