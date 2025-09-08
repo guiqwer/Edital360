@@ -1,4 +1,4 @@
-package com.ifce.edital360.model.notices;
+package com.ifce.edital360.model.edital;
 
 import com.ifce.edital360.model.enums.Exam;
 import jakarta.persistence.Column;

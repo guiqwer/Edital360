@@ -1,14 +1,13 @@
 package com.ifce.edital360.mapper;
 
-import com.ifce.edital360.dto.notices.*;
-import com.ifce.edital360.model.notices.*;
-import org.springframework.beans.factory.annotation.Value;
+import com.ifce.edital360.dto.edital.*;
+import com.ifce.edital360.model.edital.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class NoticeMapper {
-    public static Notice toEntity(NoticeCreateDto dto, String pdfUrl, List<String> announcementsUrls){
+    public static Notice toEntity(NoticeCreateDto dto, String pdfUrl){
         Notice notice = new Notice();
 
         notice.setTitle(dto.title());
@@ -32,27 +31,19 @@ public class NoticeMapper {
 
         notice.setRequirements(dto.requirements());
         notice.setDocuments(dto.documents());
-        notice.setQuotas(dto.quotas());
+        if (dto.quotas() != null) {
+            Cota cota = new Cota();
+            cota.setVagasPcd(dto.quotas().getVagasPcd());
+            cota.setVagasNegros(dto.quotas().getVagasNegros());
+            cota.setVagasIndigenas(dto.quotas().getVagasIndigenas());
+            cota.setOutrasCotas(dto.quotas().getOutrasCotas());
+            notice.setQuotas(cota);
+        }
 
         if (dto.schedule() != null) {
             notice.setSchedule(dto.schedule().stream()
                     .map(s -> new ScheduleItem(s.description(), s.date()))
                     .collect(Collectors.toList()));
-        }
-
-        if (dto.externalLinks() != null) {
-            notice.setExternalLinks(dto.externalLinks().stream()
-                    .map(link -> new ExternalLinks(link.url(), null, notice))
-                    .collect(Collectors.toList()));
-        }
-
-        //preciso fazer a lógica dos announcements depois quando tiver upload de arquivo
-        if (announcementsUrls != null && !announcementsUrls.isEmpty()) {
-            notice.setAnnouncements(
-                    announcementsUrls.stream()
-                            .map(url -> new Announcements(url, null, notice))
-                            .toList()
-            );
         }
 
         return notice;
@@ -63,6 +54,7 @@ public class NoticeMapper {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
+
                 entity.getRemuneration(),
                 entity.getInitialDate(),
                 entity.getEndDate(),
@@ -76,13 +68,14 @@ public class NoticeMapper {
                         .toList(),
                 entity.getRequirements(),
                 entity.getDocuments(),
-                entity.getExternalLinks().stream()
-                        .map(e -> new ExternalLinksDto(e.getId(), e.getUrl(), e.getCreatedAt()))
-                        .toList(),
-                entity.getAnnouncements().stream()
-                        .map(a -> new AnnouncementsDto(a.getId(), a.getUrl(), a.getCreatedAt(), null))
-                        .toList(),
-                entity.getQuotas(),
+                entity.getQuotas() != null
+                        ? new CotaDto(
+                        entity.getQuotas().getVagasPcd(),
+                        entity.getQuotas().getVagasNegros(),
+                        entity.getQuotas().getVagasIndigenas(),
+                        entity.getQuotas().getOutrasCotas()
+                )
+                        : null,
                 entity.getSubscription(),
                 entity.getPdfUrl(),
                 entity.getSchedule().stream()

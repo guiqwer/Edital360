@@ -1,11 +1,10 @@
-package com.ifce.edital360.model.notices;
+package com.ifce.edital360.model.edital;
 
 
-import com.ifce.edital360.model.enums.Exam;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +19,10 @@ public class Notice {
     private String title;
     private String description;
     private BigDecimal remuneration;
-    private LocalDateTime initialDate;
-    private LocalDateTime endDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime examDate;
+    private LocalDate initialDate;
+    private LocalDate endDate;
+    private LocalDate createdAt;
+    private LocalDate examDate;
 
 
     @ElementCollection
@@ -37,20 +36,12 @@ public class Notice {
     )
     private List<NoticeRole> roles;
 
-    @ElementCollection
-    private List<String> requirements;
+    private Requirement requirements;
 
     @ElementCollection
     private List<String> documents;
 
-    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<ExternalLinks> externalLinks;
-
-    @OneToMany(mappedBy = "notice",  cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<Announcements> announcements;
-
-    @ElementCollection
-    private List<String> quotas;
+    private Cota quotas;
     private BigDecimal subscription;
     private String pdfUrl;
 
@@ -61,7 +52,7 @@ public class Notice {
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDate.now();
     }
 
     public UUID getId() {
@@ -96,35 +87,35 @@ public class Notice {
         this.remuneration = remuneration;
     }
 
-    public LocalDateTime getInitialDate() {
+    public LocalDate getInitialDate() {
         return initialDate;
     }
 
-    public void setInitialDate(LocalDateTime initialDate) {
+    public void setInitialDate(LocalDate initialDate) {
         this.initialDate = initialDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getExamDate() {
+    public LocalDate getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(LocalDateTime examDate) {
+    public void setExamDate(LocalDate examDate) {
         this.examDate = examDate;
     }
 
@@ -144,11 +135,11 @@ public class Notice {
         this.roles = roles;
     }
 
-    public List<String> getRequirements() {
+    public Requirement getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<String> requirements) {
+    public void setRequirements(Requirement requirements) {
         this.requirements = requirements;
     }
 
@@ -160,27 +151,11 @@ public class Notice {
         this.documents = documents;
     }
 
-    public List<ExternalLinks> getExternalLinks() {
-        return externalLinks;
-    }
-
-    public void setExternalLinks(List<ExternalLinks> externalLinks) {
-        this.externalLinks = externalLinks;
-    }
-
-    public List<Announcements> getAnnouncements() {
-        return announcements;
-    }
-
-    public void setAnnouncements(List<Announcements> announcements) {
-        this.announcements = announcements;
-    }
-
-    public List<String> getQuotas() {
+    public Cota getQuotas() {
         return quotas;
     }
 
-    public void setQuotas(List<String> quotas) {
+    public void setQuotas(Cota quotas) {
         this.quotas = quotas;
     }
 
@@ -208,7 +183,7 @@ public class Notice {
         this.schedule = schedule;
     }
 
-    public Notice(String title, String description, BigDecimal remuneration, LocalDateTime initialDate, LocalDateTime endDate, LocalDateTime createdAt, LocalDateTime examDate, List<Phase> phases, List<NoticeRole> roles, List<String> requirements, List<String> documents, List<ExternalLinks> externalLinks, List<Announcements> announcements, List<String> quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule) {
+    public Notice(String title, String description, BigDecimal remuneration, LocalDate initialDate, LocalDate endDate, LocalDate createdAt, LocalDate examDate, List<Phase> phases, List<NoticeRole> roles, Requirement requirements, List<String> documents, Cota quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule) {
         this.title = title;
         this.description = description;
         this.remuneration = remuneration;
@@ -220,8 +195,6 @@ public class Notice {
         this.roles = roles;
         this.requirements = requirements;
         this.documents = documents;
-        this.externalLinks = externalLinks;
-        this.announcements = announcements;
         this.quotas = quotas;
         this.subscription = subscription;
         this.pdfUrl = pdfUrl;

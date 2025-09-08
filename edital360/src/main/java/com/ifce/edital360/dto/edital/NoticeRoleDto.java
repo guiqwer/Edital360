@@ -1,4 +1,4 @@
-package com.ifce.edital360.dto.notices;
+package com.ifce.edital360.dto.edital;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;

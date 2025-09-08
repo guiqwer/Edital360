@@ -1,4 +1,4 @@
-package com.ifce.edital360.dto.notices;
+package com.ifce.edital360.dto.edital;
 
 import com.ifce.edital360.model.enums.Exam;
 import jakarta.validation.constraints.NotNull;

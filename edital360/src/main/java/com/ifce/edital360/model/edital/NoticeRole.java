@@ -1,4 +1,4 @@
-package com.ifce.edital360.model.notices;
+package com.ifce.edital360.model.edital;
 
 import jakarta.persistence.Embeddable;
 
