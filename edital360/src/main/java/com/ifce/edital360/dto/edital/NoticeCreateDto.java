@@ -20,7 +20,7 @@ public record NoticeCreateDto(
         @NotNull LocalDate examDate,
         @NotEmpty List<PhaseDto> phases,
         @NotEmpty List<NoticeRoleDto> roles,
-        @NotEmpty Requirement requirements,
+        @NotNull Requirement requirements,
         @NotEmpty List<String> documents,
         CotaDto quotas,
         @NotNull @Positive BigDecimal subscription,

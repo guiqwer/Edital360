@@ -23,6 +23,7 @@ public record NoticeResponseDto(
         CotaDto quotas,
         BigDecimal subscription,
         String pdfUrl,
-        List<ScheduleItemDto> schedule
+        List<ScheduleItemDto> schedule,
+        Integer vacancies
 ) {
 }

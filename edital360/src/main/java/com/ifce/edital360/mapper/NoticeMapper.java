@@ -50,6 +50,21 @@ public class NoticeMapper {
     }
 
     public static NoticeResponseDto toDto(Notice entity) {
+        int roleVacancies = entity.getRoles() != null
+                ? entity.getRoles().stream()
+                .mapToInt(r -> r.getVacancies() != null ? r.getVacancies() : 0)
+                .sum()
+                : 0;
+
+        int quotaVacancies = 0;
+        if (entity.getQuotas() != null) {
+            quotaVacancies += entity.getQuotas().getVagasPcd() != null ? entity.getQuotas().getVagasPcd() : 0;
+            quotaVacancies += entity.getQuotas().getVagasNegros() != null ? entity.getQuotas().getVagasNegros() : 0;
+            quotaVacancies += entity.getQuotas().getVagasIndigenas() != null ? entity.getQuotas().getVagasIndigenas() : 0;
+        }
+
+        int totalVacancies = roleVacancies + quotaVacancies;
+
         return new NoticeResponseDto(
                 entity.getId(),
                 entity.getTitle(),
@@ -80,7 +95,8 @@ public class NoticeMapper {
                 entity.getPdfUrl(),
                 entity.getSchedule().stream()
                         .map(s -> new ScheduleItemDto(s.getDescription(), s.getDate()))
-                        .toList()
+                        .toList(),
+                totalVacancies
         );
     }
 

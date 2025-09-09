@@ -18,6 +18,7 @@ public class NoticeService {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    @Autowired
     private LocalStorageService localStorageService;
 
     @Value("${app.base-url}")

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,19 +28,19 @@ public class Notice {
 
     @ElementCollection
     @CollectionTable(name = "notice_phases", joinColumns = @JoinColumn(name = "notice_id"))
-    private List<Phase> phases;
+    private List<Phase> phases = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(
             name = "notice_roles",
             joinColumns = @JoinColumn(name = "notice_id")
     )
-    private List<NoticeRole> roles;
+    private List<NoticeRole> roles = new ArrayList<>();
 
     private Requirement requirements;
 
     @ElementCollection
-    private List<String> documents;
+    private List<String> documents = new ArrayList<>();
 
     private Cota quotas;
     private BigDecimal subscription;
@@ -47,7 +48,7 @@ public class Notice {
 
     @ElementCollection
     @CollectionTable(name = "notice_schedule", joinColumns = @JoinColumn(name = "notice_id"))
-    private List<ScheduleItem> schedule;
+    private List<ScheduleItem> schedule = new ArrayList<>();
 
 
     @PrePersist
