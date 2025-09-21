@@ -1,5 +1,6 @@
 package com.ifce.edital360.model.user;
 
+import com.ifce.edital360.model.enums.RequirementType;
 import com.ifce.edital360.model.enums.Role;
 import com.ifce.edital360.model.enums.Sex;
 import jakarta.persistence.*;
@@ -38,7 +39,8 @@ public class User implements UserDetails {
 
     private String nomeMae;
 
-    private String escolaridade;
+    @Enumerated(EnumType.STRING)
+    private RequirementType escolaridade;
 
     private String documentoIdentidade;
 
@@ -139,11 +141,11 @@ public class User implements UserDetails {
         this.nomeMae = nomeMae;
     }
 
-    public String getEscolaridade() {
+    public RequirementType getEscolaridade() {
         return escolaridade;
     }
 
-    public void setEscolaridade(String escolaridade) {
+    public void setEscolaridade(RequirementType escolaridade) {
         this.escolaridade = escolaridade;
     }
 
