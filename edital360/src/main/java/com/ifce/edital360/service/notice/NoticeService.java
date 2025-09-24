@@ -4,6 +4,7 @@ import com.ifce.edital360.controller.isencao.ExemptionDto;
 import com.ifce.edital360.dto.edital.NoticeCreateDto;
 import com.ifce.edital360.dto.edital.NoticeResponseDto;
 import com.ifce.edital360.dto.edital.NoticeUpdateDto;
+import com.ifce.edital360.dto.isencao.ExemptionSummaryDto;
 import com.ifce.edital360.mapper.NoticeMapper;
 import com.ifce.edital360.model.edital.*;
 import com.ifce.edital360.repository.NoticeRepository;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class NoticeService {
@@ -40,7 +42,6 @@ public class NoticeService {
             pdfUrl = linkCru.replaceAll("\\s+", "_");
         }
 
-        // O mapper já cuida de toda a lógica de mapeamento, incluindo a isenção
         Notice notice = NoticeMapper.toEntity(dto, pdfUrl);
         notice = noticeRepository.save(notice);
         return NoticeMapper.toDto(notice);
@@ -61,7 +62,6 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
 
-        // Atualizações dos campos básicos
         if (dto.title() != null) notice.setTitle(dto.title());
         if (dto.description() != null) notice.setDescription(dto.description());
         if (dto.remuneration() != null) notice.setRemuneration(dto.remuneration());
@@ -110,15 +110,12 @@ public class NoticeService {
             notice.setPdfUrl(pdfUrl);
         }
 
-        // Atualização da isenção - método auxiliar
         updateExemptionFields(notice, dto);
 
-        // CORREÇÃO: Removida a duplicação - apenas um save
         notice = noticeRepository.save(notice);
         return NoticeMapper.toDto(notice);
     }
 
-    // Método auxiliar para atualizar campos de isenção
     private void updateExemptionFields(Notice notice, NoticeUpdateDto dto) {
         if (dto.exemption() != null) {
             ExemptionDto e = dto.exemption();
@@ -136,10 +133,22 @@ public class NoticeService {
         }
     }
 
-    public List<NoticeResponseDto> getActiveExemptions() {
+    public List<ExemptionSummaryDto> getActiveExemptions() {
         LocalDate today = LocalDate.now();
         List<Notice> notices = noticeRepository.findActiveExemptions(today);
-        return NoticeMapper.toDtoList(notices);
+
+        return notices.stream()
+                .map(n -> {
+                    var e = n.getExemption();
+                    return new ExemptionSummaryDto(
+                            n.getId(),
+                            e.getExemptionStartDate(),
+                            e.getExemptionEndDate(),
+                            e.getEligibleCategories(),
+                            e.getDocumentationDescription()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
 

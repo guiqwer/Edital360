@@ -18,6 +18,7 @@ public class Exemption {
     @Column(length = 1000)
     private String documentationDescription;
 
+    private boolean enabled = true;
     // Construtores
     public Exemption() {}
 
@@ -30,6 +31,16 @@ public class Exemption {
     }
 
     // Getters e Setters
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public LocalDate getExemptionStartDate() {
         return exemptionStartDate;
     }

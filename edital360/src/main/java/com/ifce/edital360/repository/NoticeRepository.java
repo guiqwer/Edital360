@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface NoticeRepository extends JpaRepository<Notice, UUID> {
-    @Query("SELECT n FROM Notice n " +
-            "WHERE n.exemption IS NOT NULL " +
-            "AND n.exemption.exemptionStartDate <= :today " +
-            "AND n.exemption.exemptionEndDate >= :today")
+
+    @Query("select n from Notice n " +
+            "where n.exemption is not null " +
+            "and n.exemption.enabled = true " +
+            "and n.exemption.exemptionStartDate <= :today " +
+            "and n.exemption.exemptionEndDate >= :today")
     List<Notice> findActiveExemptions(@Param("today") LocalDate today);
 }

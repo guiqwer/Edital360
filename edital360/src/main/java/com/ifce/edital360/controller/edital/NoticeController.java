@@ -3,6 +3,7 @@ package com.ifce.edital360.controller.edital;
 import com.ifce.edital360.dto.edital.NoticeCreateDto;
 import com.ifce.edital360.dto.edital.NoticeResponseDto;
 import com.ifce.edital360.dto.edital.NoticeUpdateDto;
+import com.ifce.edital360.dto.isencao.ExemptionSummaryDto;
 import com.ifce.edital360.service.notice.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -23,8 +24,8 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
-    @GetMapping("/exemption")
-    public List<NoticeResponseDto> getActiveExemptions() {
+    @GetMapping("/isencoes/ativas")
+    public List<ExemptionSummaryDto> getActiveExemptions() {
         return noticeService.getActiveExemptions();
     }
 
