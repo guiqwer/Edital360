@@ -1,5 +1,6 @@
 package com.ifce.edital360.mapper;
 
+import com.ifce.edital360.controller.isencao.ExemptionDto;
 import com.ifce.edital360.dto.edital.*;
 import com.ifce.edital360.model.edital.*;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NoticeMapper {
+
     public static Notice toEntity(NoticeCreateDto dto, String pdfUrl){
         Notice notice = new Notice();
 
@@ -31,6 +33,7 @@ public class NoticeMapper {
 
         notice.setRequirements(dto.requirements());
         notice.setDocuments(dto.documents());
+
         if (dto.quotas() != null) {
             Cota cota = new Cota();
             cota.setVagasPcd(dto.quotas().getVagasPcd());
@@ -44,6 +47,17 @@ public class NoticeMapper {
             notice.setSchedule(dto.schedule().stream()
                     .map(s -> new ScheduleItem(s.description(), s.date()))
                     .collect(Collectors.toList()));
+        }
+
+        if (dto.exemption() != null) {
+            ExemptionDto e = dto.exemption();
+            Exemption exemption = new Exemption(
+                    e.exemptionStartDate(),
+                    e.exemptionEndDate(),
+                    e.eligibleCategories(),
+                    e.documentationDescription()
+            );
+            notice.setExemption(exemption);
         }
 
         return notice;
@@ -65,11 +79,21 @@ public class NoticeMapper {
 
         int totalVacancies = roleVacancies + quotaVacancies;
 
+        ExemptionDto exemptionDto = null;
+        if (entity.getExemption() != null) {
+            Exemption e = entity.getExemption();
+            exemptionDto = new ExemptionDto(
+                    e.getExemptionStartDate(),
+                    e.getExemptionEndDate(),
+                    e.getEligibleCategories(),
+                    e.getDocumentationDescription()
+            );
+        }
+
         return new NoticeResponseDto(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-
                 entity.getRemuneration(),
                 entity.getInitialDate(),
                 entity.getEndDate(),
@@ -77,10 +101,10 @@ public class NoticeMapper {
                 entity.getExamDate(),
                 entity.getPhases().stream()
                         .map(p -> new PhaseDto(p.getOrder(), p.getExam()))
-                        .toList(),
+                        .collect(Collectors.toList()),
                 entity.getRoles().stream()
                         .map(r -> new NoticeRoleDto(r.getRole(), r.getVacancies()))
-                        .toList(),
+                        .collect(Collectors.toList()),
                 entity.getRequirements(),
                 entity.getDocuments(),
                 entity.getQuotas() != null
@@ -95,12 +119,13 @@ public class NoticeMapper {
                 entity.getPdfUrl(),
                 entity.getSchedule().stream()
                         .map(s -> new ScheduleItemDto(s.getDescription(), s.getDate()))
-                        .toList(),
-                totalVacancies
+                        .collect(Collectors.toList()),
+                totalVacancies,
+                exemptionDto
         );
     }
 
     public static List<NoticeResponseDto> toDtoList(List<Notice> entities) {
-        return entities.stream().map(NoticeMapper::toDto).toList();
+        return entities.stream().map(NoticeMapper::toDto).collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package com.ifce.edital360.dto.edital;
 
+import com.ifce.edital360.controller.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,6 +26,7 @@ public record NoticeUpdateDto(
         CotaDto quotas,
         @Positive BigDecimal subscription,
         MultipartFile pdf,
-        List<ScheduleItemDto> schedule
+        List<ScheduleItemDto> schedule,
+        ExemptionDto exemption
 ) {
 }

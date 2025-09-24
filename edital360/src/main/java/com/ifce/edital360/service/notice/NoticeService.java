@@ -1,5 +1,6 @@
 package com.ifce.edital360.service.notice;
 
+import com.ifce.edital360.controller.isencao.ExemptionDto;
 import com.ifce.edital360.dto.edital.NoticeCreateDto;
 import com.ifce.edital360.dto.edital.NoticeResponseDto;
 import com.ifce.edital360.dto.edital.NoticeUpdateDto;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,13 +38,11 @@ public class NoticeService {
             var uploadResult = localStorageService.salvar(dto.pdf());
             var linkCru = baseUrl + "/publicos/" + uploadResult;
             pdfUrl = linkCru.replaceAll("\\s+", "_");
-
         }
 
+        // O mapper já cuida de toda a lógica de mapeamento, incluindo a isenção
         Notice notice = NoticeMapper.toEntity(dto, pdfUrl);
-
         notice = noticeRepository.save(notice);
-
         return NoticeMapper.toDto(notice);
     }
 
@@ -61,6 +61,7 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
 
+        // Atualizações dos campos básicos
         if (dto.title() != null) notice.setTitle(dto.title());
         if (dto.description() != null) notice.setDescription(dto.description());
         if (dto.remuneration() != null) notice.setRemuneration(dto.remuneration());
@@ -109,9 +110,38 @@ public class NoticeService {
             notice.setPdfUrl(pdfUrl);
         }
 
+        // Atualização da isenção - método auxiliar
+        updateExemptionFields(notice, dto);
+
+        // CORREÇÃO: Removida a duplicação - apenas um save
         notice = noticeRepository.save(notice);
         return NoticeMapper.toDto(notice);
     }
+
+    // Método auxiliar para atualizar campos de isenção
+    private void updateExemptionFields(Notice notice, NoticeUpdateDto dto) {
+        if (dto.exemption() != null) {
+            ExemptionDto e = dto.exemption();
+            Exemption exemption = notice.getExemption();
+            if (exemption == null) {
+                exemption = new Exemption();
+            }
+
+            if (e.exemptionStartDate() != null) exemption.setExemptionStartDate(e.exemptionStartDate());
+            if (e.exemptionEndDate() != null) exemption.setExemptionEndDate(e.exemptionEndDate());
+            if (e.eligibleCategories() != null) exemption.setEligibleCategories(e.eligibleCategories());
+            if (e.documentationDescription() != null) exemption.setDocumentationDescription(e.documentationDescription());
+
+            notice.setExemption(exemption);
+        }
+    }
+
+    public List<NoticeResponseDto> getActiveExemptions() {
+        LocalDate today = LocalDate.now();
+        List<Notice> notices = noticeRepository.findActiveExemptions(today);
+        return NoticeMapper.toDtoList(notices);
+    }
+
 
     private String uploadFile(MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {

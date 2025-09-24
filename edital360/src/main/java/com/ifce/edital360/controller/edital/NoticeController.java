@@ -23,6 +23,11 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
+    @GetMapping("/exemption")
+    public List<NoticeResponseDto> getActiveExemptions() {
+        return noticeService.getActiveExemptions();
+    }
+
     @PostMapping(value = "/cadastrar", consumes = "multipart/form-data")
     @Operation(summary = "Cadastra um novo edital")
     public ResponseEntity<NoticeResponseDto> cadastrarEdital(@Valid @ModelAttribute NoticeCreateDto dto) throws IOException {

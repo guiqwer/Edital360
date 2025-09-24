@@ -51,6 +51,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/editais/obter/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/editais/atualizar/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/editais/exemption").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
