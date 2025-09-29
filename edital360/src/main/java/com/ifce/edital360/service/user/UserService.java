@@ -37,6 +37,7 @@ public class UserService {
 
         String email = dto.email().trim().toLowerCase();
         String confirmarEmail = dto.confirmarEmail().trim().toLowerCase();
+        String cpf = dto.cpf();
 
         if (!email.equals(confirmarEmail)) {
             throw new EmailNaoConfereException("Os e-mails não conferem.");
@@ -44,6 +45,10 @@ public class UserService {
 
         if (userRepository.existsByEmail(email)) {
             throw new EmailJaCadastradoException("Email já cadastrado.");
+        }
+
+        if (userRepository.existsByCpf(cpf)){
+            throw new CpfInvalidoException("Cpf Ja cadastrado.");
         }
 
         Sex sexo;

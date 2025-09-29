@@ -11,20 +11,162 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public record NoticeCreateDto(
-        @NotBlank String title,
-        @NotBlank String description,
-        @Positive BigDecimal remuneration,
-        @NotNull LocalDate initialDate,
-        @NotNull LocalDate endDate,
-        @NotNull LocalDate examDate,
-        @NotEmpty List<PhaseDto> phases,
-        @NotEmpty List<NoticeRoleDto> roles,
-        @NotNull Requirement requirements,
-        @NotEmpty List<String> documents,
-        CotaDto quotas,
-        @NotNull @Positive BigDecimal subscription,
-        MultipartFile pdf,
-        List<ScheduleItemDto> schedule
-        ) {
+public class NoticeCreateDto {
+
+    @NotBlank
+    private String title;
+
+    @NotBlank
+    private String description;
+
+    @Positive
+    private BigDecimal remuneration;
+
+    @NotNull
+    private LocalDate initialDate;
+
+    @NotNull
+    private LocalDate endDate;
+
+    @NotNull
+    private LocalDate examDate;
+
+    @NotEmpty
+    private List<PhaseDto> phases;
+
+    @NotEmpty
+    private List<NoticeRoleDto> roles;
+
+    @NotNull
+    private Requirement requirements;
+
+    @NotEmpty
+    private List<String> documents;
+
+    private CotaDto quotas;
+
+    @NotNull
+    @Positive
+    private BigDecimal subscription;
+
+    private MultipartFile pdf;
+
+    private List<ScheduleItemDto> schedule;
+
+    // Construtor vazio obrigatório para Spring
+    public NoticeCreateDto() {
+    }
+
+    // Getters e Setters
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getRemuneration() {
+        return remuneration;
+    }
+
+    public void setRemuneration(BigDecimal remuneration) {
+        this.remuneration = remuneration;
+    }
+
+    public LocalDate getInitialDate() {
+        return initialDate;
+    }
+
+    public void setInitialDate(LocalDate initialDate) {
+        this.initialDate = initialDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getExamDate() {
+        return examDate;
+    }
+
+    public void setExamDate(LocalDate examDate) {
+        this.examDate = examDate;
+    }
+
+    public List<PhaseDto> getPhases() {
+        return phases;
+    }
+
+    public void setPhases(List<PhaseDto> phases) {
+        this.phases = phases;
+    }
+
+    public List<NoticeRoleDto> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<NoticeRoleDto> roles) {
+        this.roles = roles;
+    }
+
+    public Requirement getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(Requirement requirements) {
+        this.requirements = requirements;
+    }
+
+    public List<String> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<String> documents) {
+        this.documents = documents;
+    }
+
+    public CotaDto getQuotas() {
+        return quotas;
+    }
+
+    public void setQuotas(CotaDto quotas) {
+        this.quotas = quotas;
+    }
+
+    public BigDecimal getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(BigDecimal subscription) {
+        this.subscription = subscription;
+    }
+
+    public MultipartFile getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(MultipartFile pdf) {
+        this.pdf = pdf;
+    }
+
+    public List<ScheduleItemDto> getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(List<ScheduleItemDto> schedule) {
+        this.schedule = schedule;
+    }
 }
