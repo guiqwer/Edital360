@@ -10,39 +10,39 @@ public class NoticeMapper {
     public static Notice toEntity(NoticeCreateDto dto, String pdfUrl){
         Notice notice = new Notice();
 
-        notice.setTitle(dto.title());
-        notice.setDescription(dto.description());
-        notice.setRemuneration(dto.remuneration());
-        notice.setInitialDate(dto.initialDate());
-        notice.setEndDate(dto.endDate());
-        notice.setExamDate(dto.examDate());
-        notice.setSubscription(dto.subscription());
+        notice.setTitle(dto.getTitle());
+        notice.setDescription(dto.getDescription());
+        notice.setRemuneration(dto.getRemuneration());
+        notice.setInitialDate(dto.getInitialDate());
+        notice.setEndDate(dto.getEndDate());
+        notice.setExamDate(dto.getExamDate());
+        notice.setSubscription(dto.getSubscription());
         notice.setPdfUrl(pdfUrl);
 
-        notice.setPhases(dto.phases()
+        notice.setPhases(dto.getPhases()
                 .stream()
-                .map(p -> new Phase(p.order(), p.exam()))
+                .map(p -> new Phase(p.getOrder(), p.getExam()))
                 .collect(Collectors.toList()));
 
-        notice.setRoles(dto.roles()
+        notice.setRoles(dto.getRoles()
                 .stream()
-                .map(r -> new NoticeRole(r.role(), r.vacancies()))
+                .map(r -> new NoticeRole(r.getRole(), r.getVacancies()))
                 .collect(Collectors.toList()));
 
-        notice.setRequirements(dto.requirements());
-        notice.setDocuments(dto.documents());
-        if (dto.quotas() != null) {
+        notice.setRequirements(dto.getRequirements());
+        notice.setDocuments(dto.getDocuments());
+        if (dto.getQuotas() != null) {
             Cota cota = new Cota();
-            cota.setVagasPcd(dto.quotas().getVagasPcd());
-            cota.setVagasNegros(dto.quotas().getVagasNegros());
-            cota.setVagasIndigenas(dto.quotas().getVagasIndigenas());
-            cota.setOutrasCotas(dto.quotas().getOutrasCotas());
+            cota.setVagasPcd(dto.getQuotas().getVagasPcd());
+            cota.setVagasNegros(dto.getQuotas().getVagasNegros());
+            cota.setVagasIndigenas(dto.getQuotas().getVagasIndigenas());
+            cota.setOutrasCotas(dto.getQuotas().getOutrasCotas());
             notice.setQuotas(cota);
         }
 
-        if (dto.schedule() != null) {
-            notice.setSchedule(dto.schedule().stream()
-                    .map(s -> new ScheduleItem(s.description(), s.date()))
+        if (dto.getSchedule() != null) {
+            notice.setSchedule(dto.getSchedule().stream()
+                    .map(s -> new ScheduleItem(s.getDescription(), s.getDate()))
                     .collect(Collectors.toList()));
         }
 

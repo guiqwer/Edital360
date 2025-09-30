@@ -32,8 +32,8 @@ public class NoticeService {
     public NoticeResponseDto createNotice(NoticeCreateDto dto) throws IOException {
         String pdfUrl = null;
 
-        if(dto.pdf() != null && !dto.pdf().isEmpty()) {
-            var uploadResult = localStorageService.salvar(dto.pdf());
+        if(dto.getPdf()!= null && !dto.getPdf().isEmpty()) {
+            var uploadResult = localStorageService.salvar(dto.getPdf());
             var linkCru = baseUrl + "/publicos/" + uploadResult;
             pdfUrl = linkCru.replaceAll("\\s+", "_");
 
@@ -61,51 +61,51 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
 
-        if (dto.title() != null) notice.setTitle(dto.title());
-        if (dto.description() != null) notice.setDescription(dto.description());
-        if (dto.remuneration() != null) notice.setRemuneration(dto.remuneration());
-        if (dto.initialDate() != null) notice.setInitialDate(dto.initialDate());
-        if (dto.endDate() != null) notice.setEndDate(dto.endDate());
-        if (dto.examDate() != null) notice.setExamDate(dto.examDate());
-        if (dto.subscription() != null) notice.setSubscription(dto.subscription());
+        if (dto.getTitle() != null) notice.setTitle(dto.getTitle());
+        if (dto.getDescription()!= null) notice.setDescription(dto.getDescription());
+        if (dto.getRemuneration() != null) notice.setRemuneration(dto.getRemuneration());
+        if (dto.getInitialDate() != null) notice.setInitialDate(dto.getInitialDate());
+        if (dto.getEndDate()!= null) notice.setEndDate(dto.getEndDate());
+        if (dto.getExamDate() != null) notice.setExamDate(dto.getExamDate());
+        if (dto.getSubscription() != null) notice.setSubscription(dto.getSubscription());
 
-        if (dto.phases() != null && !dto.phases().isEmpty()) {
-            notice.setPhases(dto.phases().stream()
-                    .map(p -> new Phase(p.order(), p.exam()))
+        if (dto.getPhases()!= null && !dto.getPhases().isEmpty()) {
+            notice.setPhases(dto.getPhases().stream()
+                    .map(p -> new Phase(p.getOrder(), p.getExam()))
                     .toList());
         }
 
-        if (dto.roles() != null && !dto.roles().isEmpty()) {
-            notice.setRoles(dto.roles().stream()
-                    .map(r -> new NoticeRole(r.role(), r.vacancies()))
+        if (dto.getRoles() != null && !dto.getRoles() .isEmpty()) {
+            notice.setRoles(dto.getRoles() .stream()
+                    .map(r -> new NoticeRole(r.getRole(), r.getVacancies()))
                     .toList());
         }
 
-        if (dto.requirements() != null) {
-            notice.setRequirements(dto.requirements());
+        if (dto.getRequirements() != null) {
+            notice.setRequirements(dto.getRequirements());
         }
 
-        if (dto.documents() != null && !dto.documents().isEmpty()) {
-            notice.setDocuments(dto.documents());
+        if (dto.getDocuments() != null && !dto.getDocuments().isEmpty()) {
+            notice.setDocuments(dto.getDocuments());
         }
 
-        if (dto.quotas() != null) {
+        if (dto.getQuotas() != null) {
             Cota cota = new Cota();
-            cota.setVagasPcd(dto.quotas().getVagasPcd());
-            cota.setVagasNegros(dto.quotas().getVagasNegros());
-            cota.setVagasIndigenas(dto.quotas().getVagasIndigenas());
-            cota.setOutrasCotas(dto.quotas().getOutrasCotas());
+            cota.setVagasPcd(dto.getQuotas().getVagasPcd());
+            cota.setVagasNegros(dto.getQuotas().getVagasNegros());
+            cota.setVagasIndigenas(dto.getQuotas().getVagasIndigenas());
+            cota.setOutrasCotas(dto.getQuotas().getOutrasCotas());
             notice.setQuotas(cota);
         }
 
-        if (dto.schedule() != null && !dto.schedule().isEmpty()) {
-            notice.setSchedule(dto.schedule().stream()
-                    .map(s -> new ScheduleItem(s.description(), s.date()))
+        if (dto.getSchedule() != null && !dto.getSchedule().isEmpty()) {
+            notice.setSchedule(dto.getSchedule().stream()
+                    .map(s -> new ScheduleItem(s.getDescription(),s.getDate()))
                     .toList());
         }
 
-        if (dto.pdf() != null && !dto.pdf().isEmpty()) {
-            String pdfUrl = uploadFile(dto.pdf());
+        if (dto.getPdf() != null && !dto.getPdf().isEmpty()) {
+            String pdfUrl = uploadFile(dto.getPdf());
             notice.setPdfUrl(pdfUrl);
         }
 

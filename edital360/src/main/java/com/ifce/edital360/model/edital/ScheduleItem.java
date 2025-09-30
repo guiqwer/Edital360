@@ -9,6 +9,9 @@ public class ScheduleItem {
     private String description;
     private LocalDateTime date;
 
+    public ScheduleItem(String description, Object o, LocalDateTime date) {
+    }
+
     public String getDescription() {
         return description;
     }
