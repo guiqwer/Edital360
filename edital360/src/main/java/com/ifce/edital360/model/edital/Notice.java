@@ -50,6 +50,20 @@ public class Notice {
     @CollectionTable(name = "notice_schedule", joinColumns = @JoinColumn(name = "notice_id"))
     private List<ScheduleItem> schedule = new ArrayList<>();
 
+    //----------------------------Isencao----------------------
+
+    @Embedded
+    private Exemption exemption;
+
+    public Exemption getExemption() {
+        return exemption;
+    }
+
+    public void setExemption(Exemption exemption) {
+        this.exemption = exemption;
+    }
+
+    //----------------------------------------------------------
 
     @PrePersist
     protected void onCreate() {
