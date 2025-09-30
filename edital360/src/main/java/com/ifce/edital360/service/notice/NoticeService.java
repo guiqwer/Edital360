@@ -10,6 +10,8 @@ import com.ifce.edital360.service.localStorage.LocalStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,9 +48,9 @@ public class NoticeService {
         return NoticeMapper.toDto(notice);
     }
 
-    public List<NoticeResponseDto> getAll() {
-        List<Notice> notices = noticeRepository.findAll();
-        return NoticeMapper.toDtoList(notices);
+    public Page<NoticeResponseDto> getAll(Pageable pageable) {
+        Page<Notice> notices = noticeRepository.findAll(pageable);
+        return NoticeMapper.toDtoPaginated(notices);
     }
 
     public NoticeResponseDto getById(UUID id) {

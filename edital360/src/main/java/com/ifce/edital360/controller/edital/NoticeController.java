@@ -5,8 +5,13 @@ import com.ifce.edital360.dto.edital.NoticeResponseDto;
 import com.ifce.edital360.dto.edital.NoticeUpdateDto;
 import com.ifce.edital360.service.notice.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +34,21 @@ public class NoticeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+
+
+    @Operation(summary = "Busca todos os avisos de forma paginada")
+    @Parameters({
+            @Parameter(name = "page", description = "Número da página que você deseja obter (0..N)",
+                    example = "0", schema = @Schema(type = "integer")),
+            @Parameter(name = "size", description = "Quantidade de elementos por página.",
+                    example = "10", schema = @Schema(type = "integer")),
+            @Parameter(name = "sort", description = "Critério de ordenação no formato: propriedade,(asc|desc). " +
+                    "A ordenação padrão é ascendente. Múltiplos critérios são suportados.",
+                    example = "initialDate,desc", schema = @Schema(type = "string"))
+    })
     @GetMapping(value = "/obter")
-    @Operation(summary = "Obtém todos os editais cadastrados")
-    public ResponseEntity<List<NoticeResponseDto>> obter() {
-        List<NoticeResponseDto> response = noticeService.getAll();
+    public ResponseEntity<Page<NoticeResponseDto>> obter(@Parameter(hidden = true) Pageable pageable) {
+        Page<NoticeResponseDto> response = noticeService.getAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

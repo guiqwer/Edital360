@@ -2,6 +2,7 @@ package com.ifce.edital360.mapper;
 
 import com.ifce.edital360.dto.edital.*;
 import com.ifce.edital360.model.edital.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,7 +101,7 @@ public class NoticeMapper {
         );
     }
 
-    public static List<NoticeResponseDto> toDtoList(List<Notice> entities) {
-        return entities.stream().map(NoticeMapper::toDto).toList();
+    public static Page<NoticeResponseDto> toDtoPaginated(Page<Notice> entities) {
+        return entities.map(NoticeMapper::toDto);
     }
 }
