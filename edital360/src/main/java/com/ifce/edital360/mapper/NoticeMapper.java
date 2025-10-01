@@ -1,6 +1,7 @@
 package com.ifce.edital360.mapper;
 
 import com.ifce.edital360.dto.edital.*;
+import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class NoticeMapper {
 
         notice.setRequirements(dto.getRequirements());
         notice.setDocuments(dto.getDocuments());
+
         if (dto.getQuotas() != null) {
             Cota cota = new Cota();
             cota.setVagasPcd(dto.getQuotas().getVagasPcd());
@@ -44,6 +46,18 @@ public class NoticeMapper {
             notice.setSchedule(dto.getSchedule().stream()
                     .map(s -> new ScheduleItem(s.getDescription(), s.getDate()))
                     .collect(Collectors.toList()));
+        }
+
+
+        if (dto.getExemption() != null) {
+            ExemptionDto e = dto.getExemption();
+            Exemption exemption = new Exemption(
+                    e.getExemptionStartDate(),
+                    e.getExemptionEndDate(),
+                    e.getEligibleCategories(),
+                    e.getDocumentationDescription()
+            );
+            notice.setExemption(exemption);
         }
 
         return notice;
@@ -64,6 +78,17 @@ public class NoticeMapper {
         }
 
         int totalVacancies = roleVacancies + quotaVacancies;
+
+        ExemptionDto exemptionDto = null;
+        if (entity.getExemption() != null) {
+            Exemption e = entity.getExemption();
+            exemptionDto = new ExemptionDto(
+                    e.getExemptionStartDate(),
+                    e.getExemptionEndDate(),
+                    e.getEligibleCategories(),
+                    e.getDocumentationDescription()
+            );
+        }
 
         return new NoticeResponseDto(
                 entity.getId(),
@@ -96,7 +121,8 @@ public class NoticeMapper {
                 entity.getSchedule().stream()
                         .map(s -> new ScheduleItemDto(s.getDescription(), s.getDate()))
                         .toList(),
-                totalVacancies
+                totalVacancies,
+                exemptionDto
         );
     }
 

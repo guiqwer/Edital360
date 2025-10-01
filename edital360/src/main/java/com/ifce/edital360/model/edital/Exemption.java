@@ -18,7 +18,7 @@ public class Exemption {
     @Column(length = 1000)
     private String documentationDescription;
 
-    private boolean enabled = true;
+    private Boolean enabled = true;
     // Construtores
     public Exemption() {}
 
@@ -71,5 +71,30 @@ public class Exemption {
 
     public void setDocumentationDescription(String documentationDescription) {
         this.documentationDescription = documentationDescription;
+    }
+
+    //metodos de verificação
+
+    /**
+     * Verifica APENAS se a data atual está dentro do intervalo de início e fim.
+     * @return true se o período estiver aberto, false caso contrário.
+     */
+    public boolean isPeriodOpen() {
+        // Garante que as datas não são nulas antes de comparar
+        if (this.exemptionStartDate == null || this.exemptionEndDate == null) {
+            return false;
+        }
+        final LocalDate today = LocalDate.now();
+        return !today.isBefore(exemptionStartDate) && !today.isAfter(exemptionEndDate);
+    }
+
+
+    /**
+     * Método de verificação completo: A isenção está habilitada E o período está aberto?
+     * É ESTE método que você deve usar na sua camada de Serviço.
+     * @return true se a isenção estiver totalmente ativa.
+     */
+    public boolean isRequestable() {
+        return this.enabled && isPeriodOpen();
     }
 }

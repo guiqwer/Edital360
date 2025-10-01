@@ -1,5 +1,6 @@
 package com.ifce.edital360.dto.edital;
 
+import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public record NoticeResponseDto(
         BigDecimal subscription,
         String pdfUrl,
         List<ScheduleItemDto> schedule,
-        Integer vacancies
+        Integer vacancies,
+        ExemptionDto exemption
 ) {
 }
