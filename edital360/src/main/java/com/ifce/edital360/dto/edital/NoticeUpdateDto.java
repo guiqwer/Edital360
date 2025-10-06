@@ -1,5 +1,6 @@
 package com.ifce.edital360.dto.edital;
 
+import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotNull;
@@ -39,6 +40,16 @@ public class NoticeUpdateDto {
 
     private MultipartFile pdf;
     private List<ScheduleItemDto> schedule;
+
+    private ExemptionDto exemption;
+
+    public ExemptionDto getExemption() {
+        return exemption;
+    }
+
+    public void setExemption(ExemptionDto exemption) {
+        this.exemption = exemption;
+    }
 
     // Construtor vazio obrigatório para Spring MVC
     public NoticeUpdateDto() {

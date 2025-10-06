@@ -1,6 +1,7 @@
 package com.ifce.edital360.model.edital;
 
 
+import com.ifce.edital360.model.isencao.PedidoIsencao;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -50,6 +51,35 @@ public class Notice {
     @CollectionTable(name = "notice_schedule", joinColumns = @JoinColumn(name = "notice_id"))
     private List<ScheduleItem> schedule = new ArrayList<>();
 
+    //----------------------------Isencao----------------------
+
+    @Embedded
+    private Exemption exemption;
+
+    public Exemption getExemption() {
+        return exemption;
+    }
+
+    public void setExemption(Exemption exemption) {
+        this.exemption = exemption;
+    }
+
+    @OneToMany(
+            mappedBy = "notice",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<PedidoIsencao> exemptionRequests = new ArrayList<>();
+
+    public List<PedidoIsencao> getExemptionRequests() {
+        return exemptionRequests;
+    }
+
+    public void setExemptionRequests(List<PedidoIsencao> exemptionRequests) {
+        this.exemptionRequests = exemptionRequests;
+    }
+
+    //----------------------------------------------------------
 
     @PrePersist
     protected void onCreate() {

@@ -3,8 +3,12 @@ package com.ifce.edital360.service.notice;
 import com.ifce.edital360.dto.edital.NoticeCreateDto;
 import com.ifce.edital360.dto.edital.NoticeResponseDto;
 import com.ifce.edital360.dto.edital.NoticeUpdateDto;
+import com.ifce.edital360.dto.isencao.ExemptionDto;
+import com.ifce.edital360.dto.isencao.ExemptionSummaryDto;
+import com.ifce.edital360.dto.isencao.PedidoIsencaoResponseDTO;
 import com.ifce.edital360.mapper.NoticeMapper;
 import com.ifce.edital360.model.edital.*;
+import com.ifce.edital360.model.isencao.PedidoIsencao;
 import com.ifce.edital360.repository.NoticeRepository;
 import com.ifce.edital360.service.localStorage.LocalStorageService;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class NoticeService {
@@ -113,6 +119,85 @@ public class NoticeService {
 
         notice = noticeRepository.save(notice);
         return NoticeMapper.toDto(notice);
+    }
+
+    private void updateExemptionFields(Notice notice, NoticeUpdateDto dto) {
+        if (dto.getExemption() != null) {
+            ExemptionDto e = dto.getExemption();
+            Exemption exemption = notice.getExemption();
+            if (exemption == null) {
+                exemption = new Exemption();
+            }
+
+            if (e.getExemptionStartDate() != null) exemption.setExemptionStartDate(e.getExemptionStartDate());
+            if (e.getExemptionEndDate()!= null) exemption.setExemptionEndDate(e.getExemptionEndDate());
+            if (e.getEligibleCategories() != null) exemption.setEligibleCategories(e.getEligibleCategories());
+            if (e.getDocumentationDescription() != null) exemption.setDocumentationDescription(e.getDocumentationDescription());
+
+            notice.setExemption(exemption);
+        }
+    }
+
+
+    public List<ExemptionSummaryDto> getActiveExemptions() {
+        LocalDate today = LocalDate.now();
+        List<Notice> notices = noticeRepository.findActiveExemptions(today);
+
+        return notices.stream()
+                .map(n -> {
+                    var e = n.getExemption();
+                    return new ExemptionSummaryDto(
+                            n.getId(),
+                            e.getExemptionStartDate(),
+                            e.getExemptionEndDate(),
+                            e.getEligibleCategories(),
+                            e.getDocumentationDescription()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    public ExemptionSummaryDto getExemptionByNoticeId(UUID noticeId) {
+       
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
+
+        Exemption exemption = notice.getExemption();
+
+        if (exemption == null) {
+            throw new EntityNotFoundException("Não há informações de isenção para o edital com ID: " + noticeId);
+        }
+
+        return new ExemptionSummaryDto(
+                notice.getId(),
+                exemption.getExemptionStartDate(),
+                exemption.getExemptionEndDate(),
+                exemption.getEligibleCategories(),
+                exemption.getDocumentationDescription()
+        );
+    }
+
+    public List<PedidoIsencaoResponseDTO> getPedidosByNoticeId(UUID noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
+
+        List<PedidoIsencao> pedidos = notice.getExemptionRequests(); 
+
+        return pedidos.stream()
+                .map(PedidoIsencaoResponseDTO::fromEntity)
+                .toList();
+    }
+
+
+    public Exemption getExemptionRulesByNoticeId(UUID noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado: " + noticeId));
+
+        if (notice.getExemption() == null) {
+            throw new EntityNotFoundException("Este edital não possui regras de isenção.");
+        }
+
+        return notice.getExemption();
     }
 
     private String uploadFile(MultipartFile file) throws IOException {
