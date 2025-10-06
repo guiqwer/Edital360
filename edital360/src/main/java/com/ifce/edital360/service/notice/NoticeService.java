@@ -156,21 +156,18 @@ public class NoticeService {
     }
 
     public ExemptionSummaryDto getExemptionByNoticeId(UUID noticeId) {
-        // 1. Busca o edital pelo ID. Se não existir, lança uma exceção.
+       
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
 
-        // 2. Pega o objeto de isenção associado ao edital.
         Exemption exemption = notice.getExemption();
 
-        // 3. Verifica se o edital realmente possui uma isenção.
         if (exemption == null) {
             throw new EntityNotFoundException("Não há informações de isenção para o edital com ID: " + noticeId);
         }
 
-        // 4. Mapeia a entidade para o DTO de resumo e retorna.
         return new ExemptionSummaryDto(
-                notice.getId(), // Ou exemption.getId(), dependendo do que você quer expor
+                notice.getId(),
                 exemption.getExemptionStartDate(),
                 exemption.getExemptionEndDate(),
                 exemption.getEligibleCategories(),
@@ -179,15 +176,11 @@ public class NoticeService {
     }
 
     public List<PedidoIsencaoResponseDTO> getPedidosByNoticeId(UUID noticeId) {
-        // 1. Encontra o edital ou lança uma exceção
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
 
-        // 2. USA A NOVA LISTA! É aqui que a mágica acontece.
-        // Pega a lista de pedidos que já está carregada no edital
-        List<PedidoIsencao> pedidos = notice.getExemptionRequests(); // Ou getPedidosIsencao()
+        List<PedidoIsencao> pedidos = notice.getExemptionRequests(); 
 
-        // 3. Converte a lista de entidades para uma lista de DTOs
         return pedidos.stream()
                 .map(PedidoIsencaoResponseDTO::fromEntity)
                 .toList();
@@ -202,7 +195,7 @@ public class NoticeService {
             throw new EntityNotFoundException("Este edital não possui regras de isenção.");
         }
 
-        return notice.getExemption(); // Retorna o objeto embutido
+        return notice.getExemption();
     }
 
     private String uploadFile(MultipartFile file) throws IOException {
