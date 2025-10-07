@@ -17,4 +17,6 @@ public interface NoticeRepository extends JpaRepository<Notice, UUID> {
             "and n.exemption.exemptionStartDate <= :today " +
             "and n.exemption.exemptionEndDate >= :today")
     List<Notice> findActiveExemptions(@Param("today") LocalDate today);
+
+    void deleteByExamDateBefore(@Param("today") LocalDate today);
 }
