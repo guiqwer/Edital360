@@ -3,9 +3,9 @@ package com.ifce.edital360.mapper;
 import com.ifce.edital360.dto.edital.*;
 import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.*;
+import com.ifce.edital360.model.enums.StatusNotice;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class NoticeMapper {
@@ -60,6 +60,8 @@ public class NoticeMapper {
             );
             notice.setExemption(exemption);
         }
+
+        notice.setStatusNotice(StatusNotice.PUBLICADO);
 
         return notice;
     }
@@ -123,7 +125,8 @@ public class NoticeMapper {
                         .map(s -> new ScheduleItemDto(s.getDescription(), s.getDate()))
                         .toList(),
                 totalVacancies,
-                exemptionDto
+                exemptionDto,
+                entity.getStatusNotice()
         );
     }
 

@@ -2,6 +2,7 @@ package com.ifce.edital360.dto.edital;
 
 import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
+import com.ifce.edital360.model.enums.StatusNotice;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -55,6 +56,7 @@ public class NoticeCreateDto {
     private List<ScheduleItemDto> schedule;
 
     ExemptionDto exemption;
+
 
     public ExemptionDto getExemption() {
         return exemption;

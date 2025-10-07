@@ -2,6 +2,7 @@ package com.ifce.edital360.dto.edital;
 
 import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
+import com.ifce.edital360.model.enums.StatusNotice;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public record NoticeResponseDto(
         String pdfUrl,
         List<ScheduleItemDto> schedule,
         Integer vacancies,
-        ExemptionDto exemption
+        ExemptionDto exemption,
+        StatusNotice statusNotice
 ) {
 }
