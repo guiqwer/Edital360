@@ -1,6 +1,9 @@
 package com.ifce.edital360.repository;
 
 import com.ifce.edital360.model.edital.Notice;
+import com.ifce.edital360.model.enums.StatusNotice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +21,5 @@ public interface NoticeRepository extends JpaRepository<Notice, UUID> {
             "and n.exemption.exemptionEndDate >= :today")
     List<Notice> findActiveExemptions(@Param("today") LocalDate today);
 
-    void deleteByExamDateBefore(@Param("today") LocalDate today);
+    Page<Notice> findByStatusNotice(StatusNotice statusNotice, Pageable pageable);
 }

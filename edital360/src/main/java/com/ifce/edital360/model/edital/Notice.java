@@ -85,6 +85,8 @@ public class Notice {
     @Enumerated(EnumType.STRING)
     private StatusNotice statusNotice;
 
+    private boolean statusManual;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDate.now();
@@ -229,7 +231,15 @@ public class Notice {
         this.statusNotice = statusNotice;
     }
 
-    public Notice(UUID id, String title, String description, BigDecimal remuneration, LocalDate initialDate, LocalDate endDate, LocalDate createdAt, LocalDate examDate, List<Phase> phases, List<NoticeRole> roles, Requirement requirements, List<String> documents, Cota quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule, Exemption exemption, List<PedidoIsencao> exemptionRequests, StatusNotice statusNotice) {
+    public boolean isStatusManual() {
+        return statusManual;
+    }
+
+    public void setStatusManual(boolean statusManual) {
+        this.statusManual = statusManual;
+    }
+
+    public Notice(UUID id, String title, String description, BigDecimal remuneration, LocalDate initialDate, LocalDate endDate, LocalDate createdAt, LocalDate examDate, List<Phase> phases, List<NoticeRole> roles, Requirement requirements, List<String> documents, Cota quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule, Exemption exemption, List<PedidoIsencao> exemptionRequests, StatusNotice statusNotice, boolean statusManual) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -249,6 +259,7 @@ public class Notice {
         this.exemption = exemption;
         this.exemptionRequests = exemptionRequests;
         this.statusNotice = statusNotice;
+        this.statusManual = statusManual;
     }
 
     public Notice() {

@@ -56,20 +56,26 @@ public class NoticeService {
         return NoticeMapper.toDto(notice);
     }
 
-    public Page<NoticeResponseDto> getAll(Pageable pageable) {
-        Page<Notice> notices = noticeRepository.findAll(pageable);
+    public Page<NoticeResponseDto> getAll(StatusNotice statusNotice, Pageable pageable) {
+        Page<Notice> notices;
+
+        if(statusNotice != null) {
+            notices = noticeRepository.findByStatusNotice(statusNotice, pageable);
+        } else{
+            notices = noticeRepository.findAll(pageable);
+        }
         return NoticeMapper.toDtoPaginated(notices);
     }
 
     public NoticeResponseDto getById(UUID id) {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + id));
         return NoticeMapper.toDto(notice);
     }
 
     public NoticeResponseDto update(UUID id, NoticeUpdateDto dto) throws IOException {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + id));
 
         if (dto.getTitle() != null) notice.setTitle(dto.getTitle());
         if (dto.getDescription() != null) notice.setDescription(dto.getDescription());
@@ -218,6 +224,7 @@ public class NoticeService {
         LocalDate today = LocalDate.now();
 
         List<Notice> toUpdate = notices.stream()
+                .filter(n -> !n.isStatusManual())
                 .filter(n -> {
                     StatusNotice newStatus = determineStatus(n, today);
                     return newStatus != n.getStatusNotice();
@@ -253,6 +260,17 @@ public class NoticeService {
         }
 
         return StatusNotice.PUBLICADO;
+    }
+
+    public NoticeResponseDto updateStatusNotice(UUID id, StatusNotice statusNotice) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + id));
+
+        notice.setStatusNotice(statusNotice);
+        notice.setStatusManual(true);
+        noticeRepository.save(notice);
+
+        return NoticeMapper.toDto(notice);
     }
 
 }

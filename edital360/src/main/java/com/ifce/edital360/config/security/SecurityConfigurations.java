@@ -53,6 +53,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/editais/isencoes/ativas").permitAll()
                         .requestMatchers(HttpMethod.GET, "editais/{id}/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/editais/atualizar/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

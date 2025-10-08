@@ -1,11 +1,16 @@
 package com.ifce.edital360.dto.isencao;
 
+import jakarta.validation.constraints.FutureOrPresent;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class ExemptionDto {
 
+    @FutureOrPresent(message = "A data inicial da isenção deve ser posterior a data atual.")
     private LocalDate exemptionStartDate;
+
+    @FutureOrPresent(message = "A data final da isenção deve ser posterior a data atual.")
     private LocalDate exemptionEndDate;
     private List<String> eligibleCategories;
     private String documentationDescription;
