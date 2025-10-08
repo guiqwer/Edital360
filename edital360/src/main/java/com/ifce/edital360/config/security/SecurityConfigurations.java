@@ -53,16 +53,13 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/publicos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/editais/isencoes/ativas").permitAll()
                         .requestMatchers(HttpMethod.GET, "editais/{id}/**").permitAll()
-<<<<<<< Updated upstream
                         .requestMatchers(HttpMethod.PATCH, "/editais/atualizar/{id}").permitAll()
-=======
                         .requestMatchers(HttpMethod.GET, "/profile/me").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/profile/me").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/profile/me").permitAll()
                         .requestMatchers(HttpMethod.POST, "/profile/me/change-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/profile/me/change-password").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/options/escolaridade").permitAll()
->>>>>>> Stashed changes
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
