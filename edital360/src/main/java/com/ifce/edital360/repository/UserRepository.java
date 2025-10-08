@@ -10,4 +10,6 @@ public interface UserRepository extends JpaRepository<User, UUID>{
     Optional<User> findByCpf(String cpf);
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
+    boolean existsByCpfAndDeletedAtIsNull(String cpf);
 }
