@@ -23,6 +23,8 @@ services:
       - .env
     volumes:
       - ./volumes/postgres-dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     restart: unless-stopped
     logging:
       options:
