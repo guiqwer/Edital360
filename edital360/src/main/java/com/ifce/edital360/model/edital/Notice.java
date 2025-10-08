@@ -1,6 +1,7 @@
 package com.ifce.edital360.model.edital;
 
 
+import com.ifce.edital360.model.enums.StatusNotice;
 import com.ifce.edital360.model.isencao.PedidoIsencao;
 import jakarta.persistence.*;
 
@@ -81,9 +82,17 @@ public class Notice {
 
     //----------------------------------------------------------
 
+    @Enumerated(EnumType.STRING)
+    private StatusNotice statusNotice;
+
+    private boolean statusManual;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDate.now();
+        if(this.statusNotice == null) {
+            this.statusNotice = StatusNotice.PUBLICADO;
+        }
     }
 
     public UUID getId() {
@@ -214,7 +223,24 @@ public class Notice {
         this.schedule = schedule;
     }
 
-    public Notice(String title, String description, BigDecimal remuneration, LocalDate initialDate, LocalDate endDate, LocalDate createdAt, LocalDate examDate, List<Phase> phases, List<NoticeRole> roles, Requirement requirements, List<String> documents, Cota quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule) {
+    public StatusNotice getStatusNotice() {
+        return statusNotice;
+    }
+
+    public void setStatusNotice(StatusNotice statusNotice) {
+        this.statusNotice = statusNotice;
+    }
+
+    public boolean isStatusManual() {
+        return statusManual;
+    }
+
+    public void setStatusManual(boolean statusManual) {
+        this.statusManual = statusManual;
+    }
+
+    public Notice(UUID id, String title, String description, BigDecimal remuneration, LocalDate initialDate, LocalDate endDate, LocalDate createdAt, LocalDate examDate, List<Phase> phases, List<NoticeRole> roles, Requirement requirements, List<String> documents, Cota quotas, BigDecimal subscription, String pdfUrl, List<ScheduleItem> schedule, Exemption exemption, List<PedidoIsencao> exemptionRequests, StatusNotice statusNotice, boolean statusManual) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.remuneration = remuneration;
@@ -230,6 +256,10 @@ public class Notice {
         this.subscription = subscription;
         this.pdfUrl = pdfUrl;
         this.schedule = schedule;
+        this.exemption = exemption;
+        this.exemptionRequests = exemptionRequests;
+        this.statusNotice = statusNotice;
+        this.statusManual = statusManual;
     }
 
     public Notice() {

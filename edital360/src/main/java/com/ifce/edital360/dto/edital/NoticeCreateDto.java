@@ -2,16 +2,17 @@ package com.ifce.edital360.dto.edital;
 
 import com.ifce.edital360.dto.isencao.ExemptionDto;
 import com.ifce.edital360.model.edital.Requirement;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import com.ifce.edital360.model.enums.StatusNotice;
+import com.ifce.edital360.validation.ValidNoticeDates;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+@ValidNoticeDates
 public class NoticeCreateDto {
 
     @NotBlank
@@ -24,9 +25,11 @@ public class NoticeCreateDto {
     private BigDecimal remuneration;
 
     @NotNull
+    @FutureOrPresent(message = "A data inicial da inscrição deve ser posterior a data atual.")
     private LocalDate initialDate;
 
     @NotNull
+    @FutureOrPresent(message = "A data final da inscrição deve ser posterior a data atual.")
     private LocalDate endDate;
 
     @NotNull
@@ -54,7 +57,9 @@ public class NoticeCreateDto {
 
     private List<ScheduleItemDto> schedule;
 
+    @Valid
     ExemptionDto exemption;
+
 
     public ExemptionDto getExemption() {
         return exemption;

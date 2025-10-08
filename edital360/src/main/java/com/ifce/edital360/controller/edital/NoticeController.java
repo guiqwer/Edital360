@@ -6,6 +6,7 @@ import com.ifce.edital360.dto.edital.NoticeUpdateDto;
 import com.ifce.edital360.dto.isencao.ExemptionSummaryDto;
 import com.ifce.edital360.dto.isencao.PedidoIsencaoResponseDTO;
 import com.ifce.edital360.model.edital.Exemption;
+import com.ifce.edital360.model.enums.StatusNotice;
 import com.ifce.edital360.service.notice.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,8 +70,8 @@ public class NoticeController {
                     example = "initialDate,desc", schema = @Schema(type = "string"))
     })
     @GetMapping(value = "/obter")
-    public ResponseEntity<Page<NoticeResponseDto>> obter(@Parameter(hidden = true) Pageable pageable) {
-        Page<NoticeResponseDto> response = noticeService.getAll(pageable);
+    public ResponseEntity<Page<NoticeResponseDto>> obter(@Parameter(hidden = true) Pageable pageable, @Parameter(hidden = false) StatusNotice statusNotice) {
+        Page<NoticeResponseDto> response = noticeService.getAll(statusNotice, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -88,6 +89,16 @@ public class NoticeController {
             @Valid @ModelAttribute NoticeUpdateDto dto
     ) throws IOException {
         NoticeResponseDto updated = noticeService.update(id, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
+    }
+
+    @PatchMapping(value = "/atualizar/{id}")
+    @Operation(summary = "Atualiza o status de um edital pelo id")
+    public ResponseEntity<NoticeResponseDto> updateNoticeStatus(
+            @PathVariable UUID id,
+            @ModelAttribute StatusNotice statusNotice
+            ) throws IOException {
+        NoticeResponseDto updated = noticeService.updateStatusNotice(id, statusNotice);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 }
