@@ -1,6 +1,7 @@
 package com.ifce.edital360.scheduling;
 
 import com.ifce.edital360.repository.NoticeRepository;
+import com.ifce.edital360.service.notice.NoticeService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +14,16 @@ import java.time.LocalDate;
 public class NoticeCleanupScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(NoticeCleanupScheduler.class);
-    private final NoticeRepository noticeRepository;
+    private final NoticeService noticeService;
 
-    public NoticeCleanupScheduler(NoticeRepository noticeRepository) {
-        this.noticeRepository = noticeRepository;
+    public NoticeCleanupScheduler(NoticeService noticeService) {
+        this.noticeService = noticeService;
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
-    @Transactional
-    public void deleteExpiredNotices() {
-        log.info("Iniciando limpeza de editais expirados em {}", LocalDate.now());
-        noticeRepository.deleteByExamDateBefore(LocalDate.now());
-        log.info("Limpeza de editais expirados concluída.");
+    @Scheduled(cron = "0 * * * * *")
+    public void updateStatusNotices() {
+        log.info("Iniciando a atualização de status dos editais em {}", LocalDate.now());
+        noticeService.updateStatusNotice();
+        log.info("Atualização de status concluída em {}", LocalDate.now());
     }
 }

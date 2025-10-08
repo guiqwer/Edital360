@@ -8,10 +8,12 @@ import com.ifce.edital360.dto.isencao.ExemptionSummaryDto;
 import com.ifce.edital360.dto.isencao.PedidoIsencaoResponseDTO;
 import com.ifce.edital360.mapper.NoticeMapper;
 import com.ifce.edital360.model.edital.*;
+import com.ifce.edital360.model.enums.StatusNotice;
 import com.ifce.edital360.model.isencao.PedidoIsencao;
 import com.ifce.edital360.repository.NoticeRepository;
 import com.ifce.edital360.service.localStorage.LocalStorageService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -40,7 +42,7 @@ public class NoticeService {
     public NoticeResponseDto createNotice(NoticeCreateDto dto) throws IOException {
         String pdfUrl = null;
 
-        if(dto.getPdf()!= null && !dto.getPdf().isEmpty()) {
+        if (dto.getPdf() != null && !dto.getPdf().isEmpty()) {
             var uploadResult = localStorageService.salvar(dto.getPdf());
             var linkCru = baseUrl + "/publicos/" + uploadResult;
             pdfUrl = linkCru.replaceAll("\\s+", "_");
@@ -70,21 +72,21 @@ public class NoticeService {
                 .orElseThrow(() -> new EntityNotFoundException("Aviso não encontrado com ID: " + id));
 
         if (dto.getTitle() != null) notice.setTitle(dto.getTitle());
-        if (dto.getDescription()!= null) notice.setDescription(dto.getDescription());
+        if (dto.getDescription() != null) notice.setDescription(dto.getDescription());
         if (dto.getRemuneration() != null) notice.setRemuneration(dto.getRemuneration());
         if (dto.getInitialDate() != null) notice.setInitialDate(dto.getInitialDate());
-        if (dto.getEndDate()!= null) notice.setEndDate(dto.getEndDate());
+        if (dto.getEndDate() != null) notice.setEndDate(dto.getEndDate());
         if (dto.getExamDate() != null) notice.setExamDate(dto.getExamDate());
         if (dto.getSubscription() != null) notice.setSubscription(dto.getSubscription());
 
-        if (dto.getPhases()!= null && !dto.getPhases().isEmpty()) {
+        if (dto.getPhases() != null && !dto.getPhases().isEmpty()) {
             notice.setPhases(dto.getPhases().stream()
                     .map(p -> new Phase(p.getOrder(), p.getExam()))
                     .toList());
         }
 
-        if (dto.getRoles() != null && !dto.getRoles() .isEmpty()) {
-            notice.setRoles(dto.getRoles() .stream()
+        if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
+            notice.setRoles(dto.getRoles().stream()
                     .map(r -> new NoticeRole(r.getRole(), r.getVacancies()))
                     .toList());
         }
@@ -108,7 +110,7 @@ public class NoticeService {
 
         if (dto.getSchedule() != null && !dto.getSchedule().isEmpty()) {
             notice.setSchedule(dto.getSchedule().stream()
-                    .map(s -> new ScheduleItem(s.getDescription(),s.getDate()))
+                    .map(s -> new ScheduleItem(s.getDescription(), s.getDate()))
                     .toList());
         }
 
@@ -130,9 +132,10 @@ public class NoticeService {
             }
 
             if (e.getExemptionStartDate() != null) exemption.setExemptionStartDate(e.getExemptionStartDate());
-            if (e.getExemptionEndDate()!= null) exemption.setExemptionEndDate(e.getExemptionEndDate());
+            if (e.getExemptionEndDate() != null) exemption.setExemptionEndDate(e.getExemptionEndDate());
             if (e.getEligibleCategories() != null) exemption.setEligibleCategories(e.getEligibleCategories());
-            if (e.getDocumentationDescription() != null) exemption.setDocumentationDescription(e.getDocumentationDescription());
+            if (e.getDocumentationDescription() != null)
+                exemption.setDocumentationDescription(e.getDocumentationDescription());
 
             notice.setExemption(exemption);
         }
@@ -158,7 +161,7 @@ public class NoticeService {
     }
 
     public ExemptionSummaryDto getExemptionByNoticeId(UUID noticeId) {
-       
+
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
 
@@ -181,7 +184,7 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("Edital não encontrado com ID: " + noticeId));
 
-        List<PedidoIsencao> pedidos = notice.getExemptionRequests(); 
+        List<PedidoIsencao> pedidos = notice.getExemptionRequests();
 
         return pedidos.stream()
                 .map(PedidoIsencaoResponseDTO::fromEntity)
@@ -208,4 +211,48 @@ public class NoticeService {
         }
         return null;
     }
+
+    @Transactional
+    public void updateStatusNotice() {
+        List<Notice> notices = noticeRepository.findAll();
+        LocalDate today = LocalDate.now();
+
+        List<Notice> toUpdate = notices.stream()
+                .filter(n -> {
+                    StatusNotice newStatus = determineStatus(n, today);
+                    return newStatus != n.getStatusNotice();
+                })
+                .peek(n -> n.setStatusNotice(determineStatus(n, today)))
+                .toList();
+
+        noticeRepository.saveAll(toUpdate);
+    }
+
+    private StatusNotice determineStatus(Notice notice, LocalDate today) {
+
+        Exemption exemption = notice.getExemption();
+        if (exemption != null &&
+                exemption.getExemptionStartDate() != null &&
+                exemption.getExemptionEndDate() != null) {
+
+            if (!today.isBefore(exemption.getExemptionStartDate()) &&
+                    !today.isAfter(exemption.getExemptionEndDate())) {
+                return StatusNotice.PEDIDO_ISENCAO;
+            }
+        }
+
+        if (notice.getInitialDate() != null &&
+                notice.getEndDate() != null &&
+                !today.isBefore(notice.getInitialDate()) &&
+                !today.isAfter(notice.getEndDate())) {
+            return StatusNotice.INSCRICOES_ABERTAS;
+        }
+
+        if (notice.getEndDate() != null && today.isAfter(notice.getEndDate())) {
+            return StatusNotice.INSCRICOES_ENCERRADAS;
+        }
+
+        return StatusNotice.PUBLICADO;
+    }
+
 }
