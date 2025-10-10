@@ -59,7 +59,7 @@ public class NoticeController {
 
 
 
-    @Operation(summary = "Busca todos os avisos de forma paginada")
+    @Operation(summary = "Busca todos os editais de forma paginada")
     @Parameters({
             @Parameter(name = "page", description = "Número da página que você deseja obter (0..N)",
                     example = "0", schema = @Schema(type = "integer")),
