@@ -2,6 +2,7 @@ package com.ifce.edital360.service.isencao;
 
 import com.ifce.edital360.dto.isencao.PedidoIsencaoResponseDTO;
 import com.ifce.edital360.model.edital.Notice;
+import com.ifce.edital360.model.enums.StatusIsencao;
 import com.ifce.edital360.model.isencao.ArquivosIsencao;
 import com.ifce.edital360.model.isencao.PedidoIsencao;
 import com.ifce.edital360.model.user.User;
@@ -73,6 +74,16 @@ public class PedidoInsecaoService {
     public PedidoIsencaoResponseDTO getPedidoById(UUID pedidoId) {
         PedidoIsencao pedido = pedidoIsencaoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido de Isenção não encontrado com o ID: " + pedidoId));
+
+        return PedidoIsencaoResponseDTO.fromEntity(pedido);
+    }
+
+    public PedidoIsencaoResponseDTO atualizarStatusPedidoById(UUID id, StatusIsencao statusIsencao) {
+        PedidoIsencao pedido = pedidoIsencaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido de Isenção não encontrado com o ID: " + id));
+
+        pedido.setStatus(statusIsencao);
+        pedidoIsencaoRepository.save(pedido);
 
         return PedidoIsencaoResponseDTO.fromEntity(pedido);
     }

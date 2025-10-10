@@ -1,8 +1,11 @@
 package com.ifce.edital360.controller.isencao;
 
 import com.ifce.edital360.dto.isencao.PedidoIsencaoResponseDTO;
+import com.ifce.edital360.model.enums.StatusIsencao;
 import com.ifce.edital360.model.user.User;
 import com.ifce.edital360.service.isencao.PedidoInsecaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,5 +51,10 @@ public class PedidoIsencaoController {
         return ResponseEntity.ok(response);
     }
 
-
+    @PatchMapping("/{id}")
+    @Operation(summary = "Atualiza o status do pedido de insenção baseado no id")
+    public ResponseEntity<PedidoIsencaoResponseDTO> AtualizarStatusPedidoIsencao(@PathVariable UUID id, @Parameter StatusIsencao statusIsencao){
+        PedidoIsencaoResponseDTO response = pedidoInsecaoService.atualizarStatusPedidoById(id, statusIsencao);
+        return ResponseEntity.ok(response);
+    }
 }
